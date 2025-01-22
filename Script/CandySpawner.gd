@@ -1,4 +1,8 @@
+class_name CandySpawner
 extends Node2D
+
+@export_range(0.0, 1.0) var progress := 0.0:
+	set = _set_progress
 
 var delay := 3.0
 var timer := 0.0
@@ -8,10 +12,18 @@ var candy_tex = preload("res://Image/Candy.png")
 var active := []
 var idle := []
 
-func _ready():
-	delay = lerp(3.0, 0.333, float(global.level - global.firstLevel) / (global.lastLevel - global.firstLevel))
-	if global.level == global.lastLevel:
+
+func _set_progress(new_progress):
+	progress = new_progress
+
+	var old_delay = delay
+	if progress >= 1:
 		delay = 0.15
+	else:
+		delay = lerp(3.0, 0.333, progress)
+	
+	timer -= (old_delay - delay)
+
 
 func _process(delta):
 	timer -= delta
